@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 /*
- * Copyright (c) 2019 Fuzhou Rockchip Electronics Co., Ltd
+ * Copyright (c) 2020 Jayantajit Gogoi <jayanta.gogoi525@gmail.com>
  */
 
 /dts-v1/;
@@ -11,46 +11,16 @@
 	compatible = "radxa,rock-pi-s", "rockchip,rk3308";
 
 	chosen {
-		stdout-path = "serial0:1500000n8";
-	};
-
-	leds {
-		compatible = "gpio-leds";
-		pinctrl-names = "default";
-		pinctrl-0 = <&green_led_gio>, <&heartbeat_led_gpio>;
-
-		green-led {
-			label = "rock-pi-s:green:power";
-			gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_HIGH>;
-			linux,default-trigger = "default-on";
-			default-state = "on";
-		};
-
-		blue-led {
-			label = "rock-pi-s:blue:user";
-			gpios = <&gpio0 RK_PA5 GPIO_ACTIVE_HIGH>;
-			default-state = "on";
-			linux,default-trigger = "heartbeat";
-		};
-	};
-
-	typec_vcc5v: typec-vcc5v {
-		compatible = "regulator-fixed";
-		regulator-name = "typec_vcc5v";
-		regulator-always-on;
-		regulator-boot-on;
-		regulator-min-microvolt = <5000000>;
-		regulator-max-microvolt = <5000000>;
+		stdout-path = "serial2:1500000n8";
 	};
 
 	vcc5v0_sys: vcc5v0-sys {
 		compatible = "regulator-fixed";
 		regulator-name = "vcc5v0_sys";
-		regulator-min-microvolt = <5000000>;
-		regulator-max-microvolt = <5000000>;
 		regulator-always-on;
 		regulator-boot-on;
-		vin-supply = <&typec_vcc5v>;
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
 	};
 
 	vdd_core: vdd-core {
@@ -60,9 +30,9 @@
 		regulator-min-microvolt = <827000>;
 		regulator-max-microvolt = <1340000>;
 		regulator-init-microvolt = <1015000>;
+		regulator-settling-time-up-us = <250>;
 		regulator-always-on;
 		regulator-boot-on;
-		regulator-settling-time-up-us = <250>;
 		pwm-supply = <&vcc5v0_sys>;
 	};
 
@@ -76,24 +46,33 @@
 		vin-supply = <&vcc5v0_sys>;
 	};
 
-	vcc_io: vcc-io {
+	vcc_ddr: vcc-ddr {
 		compatible = "regulator-fixed";
-		regulator-name = "vcc_io";
-		regulator-min-microvolt = <3300000>;
-		regulator-max-microvolt = <3300000>;
+		regulator-name = "vcc_ddr";
 		regulator-always-on;
 		regulator-boot-on;
+		regulator-min-microvolt = <1500000>;
+		regulator-max-microvolt = <1500000>;
 		vin-supply = <&vcc5v0_sys>;
 	};
 
-	vcc_sdmmc: vcc-sdmmc {
-		compatible = "regulator-gpio";
-		regulator-name = "vcc_sdmmc";
+	vcc_1v8: vcc-1v8 {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_1v8";
+		regulator-always-on;
+		regulator-boot-on;
 		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		vin-supply = <&vcc_io>;
+	};
+
+	vcc_io: vcc-io {
+		compatible = "regulator-fixed";
+		regulator-name = "vcc_io";
+		regulator-always-on;
+		regulator-boot-on;
+		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
-		gpios = <&gpio0 RK_PA7 GPIO_ACTIVE_HIGH>;
-		states = <1800000 0x0
-			  3300000 0x1>;
 		vin-supply = <&vcc5v0_sys>;
 	};
 
@@ -103,11 +82,18 @@
 		regulator-name = "vcc_sd";
 		regulator-min-microvolt = <3300000>;
 		regulator-max-microvolt = <3300000>;
-		regulator-always-on;
-		regulator-boot-on;
-		vim-supply = <&vcc_io>;
+		vin-supply = <&vcc_io>;
 	};
 
+	vcc_sdio: vcc-sdio {
+		compatible = "regulator-gpio";
+		regulator-name = "vcc_sdio";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <3300000>;
+		states = <1800000 0x0
+			  3300000 0x1>;
+		vin-supply = <&vcc_io>;
+	};
 };
 
 &cpu0 {
@@ -115,12 +101,11 @@
 };
 
 &emmc {
-	bus-width = <8>;
+	bus-width = <4>;
 	cap-mmc-highspeed;
-	supports-emmc;
+	mmc-hs200-1_8v;
 	disable-wp;
 	non-removable;
-	num-slots = <1>;
 	status = "okay";
 };
 
@@ -128,25 +113,13 @@
 	status = "okay";
 };
 
-&pinctrl {
+&mac {
+	assigned-clocks = <&cru SCLK_MAC>;
+	assigned-clock-parents = <&mac_clkin>;
+	clock_in_out = "input";
 	pinctrl-names = "default";
-	pinctrl-0 = <&rtc_32k>;
-
-	leds {
-		green_led_gio: green-led-gpio {
-			rockchip,pins = <0 RK_PA6 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-
-		heartbeat_led_gpio: heartbeat-led-gpio {
-			rockchip,pins = <0 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-	};
-
-	usb {
-		otg_vbus_drv: otg-vbus-drv {
-			rockchip,pins = <0 RK_PC5 RK_FUNC_GPIO &pcfg_pull_none>;
-		};
-	};
+	pinctrl-0 = <&rmiim1_pins &macm1_refclk>;
+	status = "okay";
 };
 
 &pwm0 {
@@ -158,13 +131,12 @@
 	bus-width = <4>;
 	cap-mmc-highspeed;
 	cap-sd-highspeed;
-	supports-sd;
-	card-detect-delay = <300>;
-	sd-uhs-sdr25;
-	sd-uhs-sdr50;
-	sd-uhs-sdr104;
+	max-frequeency = <150000000>;
+	disable-wp;
+	pinctrl-0 = <&sdmmc_clk &sdmmc_cmd &sdmmc_det &sdmmc_bus4>;
+	card-detect-delay = <800>;
 	vmmc-supply = <&vcc_sd>;
-	vqmmc-supply = <&vcc_sdmmc>;
+	vqmmc-supply = <&vcc_sdio>;
 	status = "okay";
 };
 
