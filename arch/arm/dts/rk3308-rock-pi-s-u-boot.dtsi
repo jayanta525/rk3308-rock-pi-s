@@ -6,11 +6,11 @@
 
 / {
 	chosen {
-		u-boot,spl-boot-order = "same-as-spl", &emmc;
+		u-boot,spl-boot-order = "same-as-spl", &sdmmc, &emmc;
 	};
 };
 
-&uart2 {
+&uart0 {
 	u-boot,dm-pre-reloc;
 	clock-frequency = <24000000>;
 	status = "okay";

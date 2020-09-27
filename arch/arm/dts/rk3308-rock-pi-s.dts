@@ -11,7 +11,7 @@
 	compatible = "radxa,rock-pi-s", "rockchip,rk3308";
 
 	chosen {
-		stdout-path = "serial2:1500000n8";
+		stdout-path = "serial0:1500000n8";
 	};
 
 	vcc5v0_sys: vcc5v0-sys {
@@ -140,6 +140,6 @@
 	status = "okay";
 };
 
-&uart2 {
+&uart0 {
 	status = "okay";
 };
