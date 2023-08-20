@@ -41,7 +41,8 @@ define Build/pine64-img
 
 	# Copy the idbloader and the u-boot image to the image at sector 0x40 and 0x4000
 	dd if="$(STAGING_DIR_IMAGE)"/$(UBOOT_DEVICE_NAME)-idbloader.img of="$@" seek=64 conv=notrunc
-	dd if="$(STAGING_DIR_IMAGE)"/$(UBOOT_DEVICE_NAME)-u-boot.itb of="$@" seek=16384 conv=notrunc
+	dd if="$(STAGING_DIR_IMAGE)"/$(UBOOT_DEVICE_NAME)-uboot.img of="$@" seek=16384 conv=notrunc
+	dd if="$(STAGING_DIR_IMAGE)"/$(UBOOT_DEVICE_NAME)-trust.img of="$@" seek=24576 conv=notrunc
 endef
 
 ### Devices ###

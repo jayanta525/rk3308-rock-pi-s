@@ -131,12 +131,7 @@ UBOOT_TARGETS := \
 UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
 
 UBOOT_MAKE_FLAGS += \
-
-ifneq ($(ATF_BLOB),)
   BL31=$(PKG_BUILD_DIR)/blob/rk3308_bl31_v2.26.elf
-else
-  BL31=$(STAGING_DIR_IMAGE)/$(ATF)
-endif
 
 define Build/Configure
 	$(call Build/Configure/U-Boot)
@@ -146,8 +141,9 @@ endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
-	$(CP) $(PKG_BUILD_DIR)/idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
-	$(CP) $(PKG_BUILD_DIR)/u-boot.itb $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.itb
+	$(CP) $(PKG_BUILD_DIR)/blob/idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
+	$(CP) $(PKG_BUILD_DIR)/blob/uboot.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-uboot.img
+	$(CP) $(PKG_BUILD_DIR)/blob/trust.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-trust.img
 endef
 
 define Package/u-boot/install/default
