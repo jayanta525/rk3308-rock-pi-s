@@ -5,10 +5,10 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
-PKG_VERSION:=2021.07
+PKG_VERSION:=2023.10-rc2
 PKG_RELEASE:=5
 
-PKG_HASH:=312b7eeae44581d1362c3a3f02c28d806647756c82ba8c72241c7cdbe68ba77e
+PKG_HASH:=b7f54b2bab765abd09ebae3bd0edeb77f2f2af1c4ccf6c286d37b01d97cb6be7
 
 PKG_MAINTAINER:=Tobias Maedel <openwrt@tbspace.de>
 
@@ -28,7 +28,6 @@ define U-Boot/rk3328/Default
   BUILD_SUBTARGET:=armv8
   DEPENDS:=+PACKAGE_u-boot-$(1):trusted-firmware-a-rk3328
   ATF:=rk3328_bl31.elf
-  OF_PLATDATA:=$(1)
 endef
 
 define U-Boot/nanopi-r2c-rk3328
@@ -120,15 +119,6 @@ UBOOT_MAKE_FLAGS += \
 
 define Build/Configure
 	$(call Build/Configure/U-Boot)
-
-ifneq ($(OF_PLATDATA),)
-	mkdir -p $(PKG_BUILD_DIR)/tpl/dts
-	mkdir -p $(PKG_BUILD_DIR)/include/generated
-
-	$(CP) $(PKG_BUILD_DIR)/of-platdata/$(OF_PLATDATA)/dt-plat.c $(PKG_BUILD_DIR)/tpl/dts/dt-plat.c
-	$(CP) $(PKG_BUILD_DIR)/of-platdata/$(OF_PLATDATA)/dt-structs-gen.h $(PKG_BUILD_DIR)/include/generated/dt-structs-gen.h
-	$(CP) $(PKG_BUILD_DIR)/of-platdata/$(OF_PLATDATA)/dt-decl.h $(PKG_BUILD_DIR)/include/generated/dt-decl.h
-endif
 
 	$(SED) 's#CONFIG_MKIMAGE_DTC_PATH=.*#CONFIG_MKIMAGE_DTC_PATH="$(PKG_BUILD_DIR)/scripts/dtc/dtc"#g' $(PKG_BUILD_DIR)/.config
 endef
