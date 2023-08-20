@@ -1,3 +1,11 @@
+# OpenWrt - RADXA ROCK Pi S - RK3308
+
+### - This repo only supports openwrt for the rock pi s board from Radxa.
+### - Build are tested with boot from micro-sd card.
+### - NAND not yet tested.
+
+### - Please read - [building uboot](uboot-tk3308-doc/README.md)
+
 ![OpenWrt logo](include/logo.png)
 
 OpenWrt Project is a Linux operating system targeting embedded devices. Instead

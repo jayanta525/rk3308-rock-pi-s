@@ -1,10 +1,12 @@
 # U-boot build instructions
 
 U-boot tag: uboot v2022.04
+patch: `001-rock-pi-s-files.patch`
 
 - Prepare idbloader.img
 
 ```bash
+export BL31=/home/ubuntu/bins/rk3308_bl31_v2.26.elf
 make rock-pi-s-rk3308_defconfig
 make -j12 CROSS_COMPILE=aarch64-linux-gnu- all
 ./tools/mkimage -n rk3308 -T rksd -d /home/ubuntu/bins/rk3308_ddr_589MHz_uart0_m0_v2.06.bin idbloader.img 
@@ -20,7 +22,7 @@ cp idbloader.img /home/ubuntu/rockpis/package/boot/uboot-rockchip/src/blob/
 cp uboot.img /home/ubuntu/rockpis/package/boot/uboot-rockchip/src/blob/
 ```
 
-- trust.img is not required to generate every time
+- trust.img is not required to be generated every time
 ```bash
 ./tools/trust_merger RKTRUST/RK3308TRUST.ini 
 cp trust.img /home/ubuntu/rockpis/package/boot/uboot-rockchip/src/blob/
