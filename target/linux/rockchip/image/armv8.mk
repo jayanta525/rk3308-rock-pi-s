@@ -5,6 +5,16 @@
 # FIT will be loaded at 0x02080000. Leave 16M for that, align it to 2M and load the kernel after it.
 KERNEL_LOADADDR := 0x03200000
 
+define Device/radxa_rock-pi-s
+  DEVICE_VENDOR := Radxa
+  DEVICE_MODEL := ROCK Pi S
+  SOC := rk3308
+  SUPPORTED_DEVICES := radxa,rockpis radxa,rockpis
+  UBOOT_DEVICE_NAME := rock-pi-s-rk3308
+  IMAGE/sysupgrade.img.gz := boot-common | boot-script rockpis | pine64-img | gzip | append-metadata
+endef
+TARGET_DEVICES += radxa_rock-pi-s
+
 define Device/firefly_roc-rk3328-cc
   DEVICE_VENDOR := Firefly
   DEVICE_MODEL := ROC-RK3328-CC
