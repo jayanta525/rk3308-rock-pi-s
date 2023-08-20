@@ -22,6 +22,21 @@ define U-Boot/Default
 endef
 
 
+# RK3308 boards
+
+define U-Boot/rk3308/Default
+  BUILD_SUBTARGET:=armv8
+  ATF_BLOB:=$(1)
+  IDB_BLOB:=$(1)
+endef
+
+define U-Boot/rock-pi-s-rk3308
+  $(U-Boot/rk3308/Default)
+  NAME:=Rock Pi S
+  BUILD_DEVICES:= \
+    radxa_rock-pi-s
+endef
+
 # RK3328 boards
 
 define U-Boot/rk3328/Default
@@ -110,12 +125,18 @@ UBOOT_TARGETS := \
   nanopi-r2s-rk3328 \
   orangepi-r1-plus-rk3328 \
   orangepi-r1-plus-lts-rk3328 \
-  roc-cc-rk3328
+  roc-cc-rk3328 \
+  rock-pi-s-rk3308
 
 UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
 
 UBOOT_MAKE_FLAGS += \
+
+ifneq ($(ATF_BLOB),)
+  BL31=$(PKG_BUILD_DIR)/blob/rk3308_bl31_v2.26.elf
+else
   BL31=$(STAGING_DIR_IMAGE)/$(ATF)
+endif
 
 define Build/Configure
 	$(call Build/Configure/U-Boot)
