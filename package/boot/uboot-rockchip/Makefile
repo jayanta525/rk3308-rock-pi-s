@@ -142,8 +142,7 @@ endef
 define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
 	$(CP) $(PKG_BUILD_DIR)/blob/idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
-	$(CP) $(PKG_BUILD_DIR)/blob/uboot.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-uboot.img
-	$(CP) $(PKG_BUILD_DIR)/blob/trust.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-trust.img
+	$(CP) $(PKG_BUILD_DIR)/blob/u-boot.itb $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.itb
 endef
 
 define Package/u-boot/install/default
