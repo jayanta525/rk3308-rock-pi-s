@@ -5,10 +5,10 @@
 include $(TOPDIR)/rules.mk
 include $(INCLUDE_DIR)/kernel.mk
 
-PKG_VERSION:=2023.10-rc2
+PKG_VERSION:=2023.10-rc3
 PKG_RELEASE:=5
 
-PKG_HASH:=b7f54b2bab765abd09ebae3bd0edeb77f2f2af1c4ccf6c286d37b01d97cb6be7
+PKG_HASH:=4c29d64e764060b49e7658f0cf9f86911d0b2bc081f13980a19b99cc89584ba0
 
 PKG_MAINTAINER:=Tobias Maedel <openwrt@tbspace.de>
 
@@ -26,8 +26,9 @@ endef
 
 define U-Boot/rk3308/Default
   BUILD_SUBTARGET:=armv8
-  ATF_BLOB:=$(1)
-  IDB_BLOB:=$(1)
+  ATF:=rk3308_bl31_v2.26.elf
+  TPL:=rk3308_ddr_589MHz_uart0_m0_v2.06.bin
+  USE_BLOB:=$(1)
 endef
 
 define U-Boot/rock-pi-s-rk3308
@@ -131,18 +132,25 @@ UBOOT_TARGETS := \
 UBOOT_CONFIGURE_VARS += USE_PRIVATE_LIBGCC=yes
 
 UBOOT_MAKE_FLAGS += \
-  BL31=$(PKG_BUILD_DIR)/blob/rk3308_bl31_v2.26.elf
+  BL31=$(STAGING_DIR_IMAGE)/$(ATF) \
+  $(if $(TPL),ROCKCHIP_TPL=$(STAGING_DIR_IMAGE)/$(TPL))
 
 define Build/Configure
 	$(call Build/Configure/U-Boot)
+
+ifneq ($(USE_BLOB),)
+	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
+	$(CP) $(PKG_BUILD_DIR)/blobs/$(ATF) $(STAGING_DIR_IMAGE)/$(ATF)
+	$(CP) $(PKG_BUILD_DIR)/blobs/$(TPL) $(STAGING_DIR_IMAGE)/$(TPL)
+endif
 
 	$(SED) 's#CONFIG_MKIMAGE_DTC_PATH=.*#CONFIG_MKIMAGE_DTC_PATH="$(PKG_BUILD_DIR)/scripts/dtc/dtc"#g' $(PKG_BUILD_DIR)/.config
 endef
 
 define Build/InstallDev
 	$(INSTALL_DIR) $(STAGING_DIR_IMAGE)
-	$(CP) $(PKG_BUILD_DIR)/blob/idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
-	$(CP) $(PKG_BUILD_DIR)/blob/u-boot.itb $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.itb
+	$(CP) $(PKG_BUILD_DIR)/idbloader.img $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-idbloader.img
+	$(CP) $(PKG_BUILD_DIR)/u-boot.itb $(STAGING_DIR_IMAGE)/$(BUILD_VARIANT)-u-boot.itb
 endef
 
 define Package/u-boot/install/default

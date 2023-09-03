@@ -1,0 +1,45 @@
+From 1506305191eb8573e938560be4b5298a71882f9a Mon Sep 17 00:00:00 2001
+From: Jayantajit Gogoi <jayanta.gogoi525@gmail.com>
+Date: Thu, 31 Aug 2023 12:15:24 +0000
+Subject: [PATCH] fix boot in rock pi s
+
+---
+ configs/rock-pi-s-rk3308_defconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configs/rock-pi-s-rk3308_defconfig b/configs/rock-pi-s-rk3308_defconfig
+index cc3274a98b..cb93eeb671 100644
+--- a/configs/rock-pi-s-rk3308_defconfig
++++ b/configs/rock-pi-s-rk3308_defconfig
+@@ -48,7 +48,7 @@ CONFIG_CMD_USB_MASS_STORAGE=y
+ # CONFIG_CMD_ITEST is not set
+ # CONFIG_CMD_SETEXPR is not set
+ # CONFIG_CMD_SLEEP is not set
+-# CONFIG_DOS_PARTITION is not set
++CONFIG_DOS_PARTITION=y
+ # CONFIG_ISO_PARTITION is not set
+ CONFIG_EFI_PARTITION_ENTRIES_NUMBERS=64
+ CONFIG_SPL_OF_CONTROL=y
+diff --git a/arch/arm/mach-rockchip/Kconfig b/arch/arm/mach-rockchip/Kconfig
+index a279582f4f..e8584de258 100644
+--- a/arch/arm/mach-rockchip/Kconfig
++++ b/arch/arm/mach-rockchip/Kconfig
+@@ -159,6 +159,7 @@ config ROCKCHIP_RK3308
+ 	select SPL_ATF
+ 	select SPL_ATF_NO_PLATFORM_PARAM
+ 	select SPL_LOAD_FIT
++	imply ROCKCHIP_EXTERNAL_TPL
+ 	imply ROCKCHIP_COMMON_BOARD
+ 	imply SPL_ROCKCHIP_COMMON_BOARD
+ 	imply SPL_CLK
+@@ -166,7 +167,6 @@ config ROCKCHIP_RK3308
+ 	imply SPL_SYSCON
+ 	imply SPL_RAM
+ 	imply SPL_SERIAL
+-	imply TPL_SERIAL
+ 	imply SPL_SEPARATE_BSS
+ 	help
+ 	  The Rockchip RK3308 is a ARM-based Soc which embedded with quad
+-- 
+2.34.1
+
