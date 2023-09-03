@@ -1,4 +1,11 @@
-# U-boot build instructions
+# ~~U-boot build instructions~~ [Deprecated]
+## U-boot is built within openwrt buildsystem
+- u-boot uses ATF blob and ROCKCHIP_TPL blob within `src/` directory.
+- SD-NAND is not tested yet.
+<br>
+
+<br>
+
 ## See below for latest u-boot v2023.10-rc3
 U-boot tag: uboot v2022.04
 patch: `001-rock-pi-s-files.patch`

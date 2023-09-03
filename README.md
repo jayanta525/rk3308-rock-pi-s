@@ -1,6 +1,5 @@
 # OpenWrt - RADXA ROCK Pi S - RK3308
 
-### - This repo only supports openwrt for the rock pi s board from Radxa.
 ### - Build are tested with boot from micro-sd card.
 ### - NAND - Tested and working - [Read Here](uboot-tk3308-doc/SDNAND.md)
 
