@@ -1,7 +1,9 @@
 # ~~U-boot build instructions~~ [Deprecated]
 ## U-boot is built within openwrt buildsystem
 - u-boot uses ATF blob and ROCKCHIP_TPL blob within `src/` directory.
-- SD-NAND is not tested yet.
+- ~~SD-NAND is not tested yet.~~
+- Boot from SD-NAND works with the same image as of SD card.
+  
 <br>
 
 <br>
